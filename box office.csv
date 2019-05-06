@@ -1,0 +1,101 @@
+"","Box_office_rank","Title","Studio","Worldwide_gross","Domestic_gross","Domestic_percentage","Overseas_gross","Overseas_percentage","Year"
+"1",1,"Avatar","Fox",2788,760.5,27.3,2027.5,72.7,2009
+"2",2,"Avengers: Endgame","BV",2193.7,621.3,28.3,1572.5,71.7,2019
+"3",3,"Titanic","Par.",2187.5,659.4,30.1,1528.1,69.9,1997
+"4",4,"Star Wars: The Force Awakens","BV",2068.2,936.7,45.3,1131.6,54.7,2015
+"5",5,"Avengers: Infinity War","BV",2048.4,678.8,33.1,1369.5,66.9,2018
+"6",6,"Jurassic World","Uni.",1671.7,652.3,39,1019.4,61,2015
+"7",7,"Marvel's The Avengers","BV",1518.8,623.4,41,895.5,59,2012
+"8",8,"Furious 7","Uni.",1516,353,23.3,1163,76.7,2015
+"9",9,"Avengers: Age of Ultron","BV",1405.4,459,32.7,946.4,67.3,2015
+"10",10,"Black Panther","BV",1346.9,700.1,52,646.9,48,2018
+"11",11,"Harry Potter and the Deathly Hallows Part 2","WB",1341.7,381.2,28.4,960.5,71.6,2011
+"12",12,"Star Wars: The Last Jedi","BV",1332.5,620.2,46.5,712.4,53.5,2017
+"13",13,"Jurassic World: Fallen Kingdom","Uni.",1309.5,417.7,31.9,891.8,68.1,2018
+"14",14,"Frozen","BV",1276.5,400.7,31.4,875.7,68.6,2013
+"15",15,"Beauty and the Beast (2017)","BV",1263.5,504,39.9,759.5,60.1,2017
+"16",16,"Incredibles 2","BV",1242.8,608.6,49,634.2,51,2018
+"17",17,"The Fate of the Furious","Uni.",1236,226,18.3,1010,81.7,2017
+"18",18,"Iron Man 3","BV",1214.8,409,33.7,805.8,66.3,2013
+"19",19,"Minions","Uni.",1159.4,336,29,823.4,71,2015
+"20",20,"Captain America: Civil War","BV",1153.3,408.1,35.4,745.2,64.6,2016
+"21",21,"Aquaman","WB",1147.7,335.1,29.2,812.6,70.8,2018
+"22",22,"Transformers: Dark of the Moon","P/DW",1123.8,352.4,31.4,771.4,68.6,2011
+"23",23,"Captain Marvel","BV",1120.2,420.8,37.6,699.4,62.4,2019
+"24",24,"The Lord of the Rings: The Return of the King","NL",1119.9,377.8,33.7,742.1,66.3,2003
+"25",25,"Skyfall","Sony",1108.6,304.4,27.5,804.2,72.5,2012
+"26",26,"Transformers: Age of Extinction","Par.",1104.1,245.4,22.2,858.6,77.8,2014
+"27",27,"The Dark Knight Rises","WB",1084.9,448.1,41.3,636.8,58.7,2012
+"28",28,"Toy Story 3","BV",1067,415,38.9,652,61.1,2010
+"29",29,"Pirates of the Caribbean: Dead Man's Chest","BV",1066.2,423.3,39.7,642.9,60.3,2006
+"30",30,"Rogue One: A Star Wars Story","BV",1056.1,532.2,50.4,523.9,49.6,2016
+"31",31,"Pirates of the Caribbean: On Stranger Tides","BV",1045.7,241.1,23.1,804.6,76.9,2011
+"32",32,"Despicable Me 3","Uni.",1034.8,264.6,25.6,770.2,74.4,2017
+"33",33,"Jurassic Park","Uni.",1029.5,402.8,39.1,626.7,60.9,1993
+"34",34,"Finding Dory","BV",1028.6,486.3,47.3,542.3,52.7,2016
+"35",35,"Star Wars: Episode I - The Phantom Menace","Fox",1027,474.5,46.2,552.5,53.8,1999
+"36",36,"Alice in Wonderland (2010)","BV",1025.5,334.2,32.6,691.3,67.4,2010
+"37",37,"Zootopia","BV",1023.8,341.3,33.3,682.5,66.7,2016
+"38",38,"The Hobbit: An Unexpected Journey","WB (NL)",1021.1,303,29.7,718.1,70.3,2012
+"39",39,"The Dark Knight","WB",1004.9,535.2,53.3,469.7,46.7,2008
+"40",40,"Harry Potter and the Sorcerer's Stone","WB",975.1,317.9,32.6,657.2,67.4,2001
+"41",41,"Despicable Me 2","Uni.",970.8,368.1,37.9,602.7,62.1,2013
+"42",42,"The Lion King","BV",968.5,422.8,43.7,545.7,56.3,1994
+"43",43,"The Jungle Book (2016)","BV",966.6,364,37.7,602.5,62.3,2016
+"44",44,"Pirates of the Caribbean: At World's End","BV",963.4,309.4,32.1,654,67.9,2007
+"45",45,"Jumanji: Welcome to the Jungle","Sony",962.1,404.6,42,557.6,58,2017
+"46",46,"Harry Potter and the Deathly Hallows Part 1","WB",960.4,296.1,30.8,664.3,69.2,2010
+"47",47,"The Hobbit: The Desolation of Smaug","WB (NL)",958.4,258.4,27,700,73,2013
+"48",48,"The Hobbit: The Battle of the Five Armies","WB (NL)",956,255.1,26.7,700.9,73.3,2014
+"49",49,"Finding Nemo","BV",940.3,380.8,40.5,559.5,59.5,2003
+"50",50,"Harry Potter and the Order of the Phoenix","WB",940,292.1,31.1,647.9,68.9,2007
+"51",51,"Harry Potter and the Half-Blood Prince","WB",934.5,302.1,32.3,632.5,67.7,2009
+"52",52,"The Lord of the Rings: The Two Towers","NL",926,342.6,37,583.5,63,2002
+"53",53,"Shrek 2","DW",919.8,441.2,48,478.6,52,2004
+"54",54,"Bohemian Rhapsody","Fox",902.6,216.4,24,686.2,76,2018
+"55",55,"Harry Potter and the Goblet of Fire","WB",897.1,290.2,32.3,606.9,67.7,2005
+"56",56,"Spider-Man 3","Sony",890.9,336.5,37.8,554.3,62.2,2007
+"57",57,"Ice Age: Dawn of the Dinosaurs","Fox",886.7,196.6,22.2,690.1,77.8,2009
+"58",58,"Spectre","Sony",880.7,200.1,22.7,680.6,77.3,2015
+"59",59,"Spider-Man: Homecoming","Sony",880.2,334.2,38,546,62,2017
+"60",60,"Harry Potter and the Chamber of Secrets","WB",879.2,262.2,29.8,617,70.2,2002
+"61",61,"Ice Age: Continental Drift","Fox",877.2,161.3,18.4,715.9,81.6,2012
+"62",62,"The Secret Life of Pets","Uni.",875.5,368.4,42.1,507.1,57.9,2016
+"63",63,"Batman v Superman: Dawn of Justice","WB",873.6,330.4,37.8,543.3,62.2,2016
+"64",64,"The Lord of the Rings: The Fellowship of the Ring","NL",871.5,315.5,36.2,556,63.8,2001
+"65",65,"Wolf Warrior 2","HC",870.3,2.7,0.3,867.6,99.7,2017
+"66",66,"The Hunger Games: Catching Fire","LGF",865,424.7,49.1,440.3,50.9,2013
+"67",67,"Guardians of the Galaxy Vol. 2","BV",863.8,389.8,45.1,473.9,54.9,2017
+"68",68,"Inside Out","BV",857.6,356.5,41.6,501.1,58.4,2015
+"69",69,"Venom (2018)","Sony",855,213.5,25,641.5,75,2018
+"70",70,"Thor: Ragnarok","BV",854,315.1,36.9,538.9,63.1,2017
+"71",71,"Star Wars: Episode III - Revenge of the Sith","Fox",848.8,380.3,44.8,468.5,55.2,2005
+"72",72,"Transformers: Revenge of the Fallen","P/DW",836.3,402.1,48.1,434.2,51.9,2009
+"73",73,"The Twilight Saga: Breaking Dawn Part 2","LG/S",829.7,292.3,35.2,537.4,64.8,2012
+"74",74,"Inception","WB",828.3,292.6,35.3,535.7,64.7,2010
+"75",75,"Wonder Woman","WB",821.8,412.6,50.2,409.3,49.8,2017
+"76",76,"Spider-Man","Sony",821.7,403.7,49.1,418,50.9,2002
+"77",77,"Independence Day","Fox",817.4,306.2,37.5,511.2,62.5,1996
+"78",78,"Fantastic Beasts and Where To Find Them","WB",814,234,28.8,580,71.2,2016
+"79",79,"Coco","BV",807.1,209.7,26,597.4,74,2017
+"80",80,"Shrek the Third","P/DW",799,322.7,40.4,476.2,59.6,2007
+"81",81,"Harry Potter and the Prisoner of Azkaban","WB",796.9,249.8,31.3,547.1,68.7,2004
+"82",82,"Pirates of the Caribbean: Dead Men Tell No Tales","BV",794.9,172.6,21.7,622.3,78.3,2017
+"83",83,"E.T.: The Extra-Terrestrial","Uni.",792.9,435.1,54.9,357.8,45.1,1982
+"84",84,"Mission: Impossible - Fallout","Par.",791.1,220.2,27.8,571,72.2,2018
+"85",85,"Fast & Furious 6","Uni.",788.7,238.7,30.3,550,69.7,2013
+"86",86,"Indiana Jones and the Kingdom of the Crystal Skull","Par.",786.6,317.1,40.3,469.5,59.7,2008
+"87",87,"Deadpool 2","Fox",785,324.6,41.3,460.5,58.7,2018
+"88",88,"Spider-Man 2","Sony",783.8,373.6,47.7,410.2,52.3,2004
+"89",89,"Deadpool","Fox",783.1,363.1,46.4,420,53.6,2016
+"90",90,"Star Wars","Fox",775.4,461,59.5,314.4,40.5,1977
+"91",91,"Guardians of the Galaxy","BV",773.3,333.2,43.1,440.2,56.9,2014
+"92",92,"2012","Sony",769.7,166.1,21.6,603.6,78.4,2009
+"93",93,"Maleficent","BV",758.5,241.4,31.8,517.1,68.2,2014
+"94",94,"The Da Vinci Code","Sony",758.2,217.5,28.7,540.7,71.3,2006
+"95",95,"The Amazing Spider-Man","Sony",757.9,262,34.6,495.9,65.4,2012
+"96",96,"The Hunger Games: Mockingjay - Part 1","LGF",755.4,337.1,44.6,418.2,55.4,2014
+"97",97,"Shrek Forever After","P/DW",752.6,238.7,31.7,513.9,68.3,2010
+"98",98,"X-Men: Days of Future Past","Fox",747.9,233.9,31.3,513.9,68.7,2014
+"99",99,"Madagascar 3: Europe's Most Wanted","P/DW",746.9,216.4,29,530.5,71,2012
+"100",100,"Suicide Squad","WB",746.8,325.1,43.5,421.7,56.5,2016
