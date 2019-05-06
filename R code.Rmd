@@ -1,0 +1,319 @@
+---
+title: "Data Wrangling Final Project - Popular Movies"
+author: "Eunbin Ko"
+date: '2019 5 1'
+output: pdf_document
+---
+
+# Introduction
+### These days, people can easily find out the evaluation of movies from various “movie rating” websites. However, not all the movie rating websites has the same result. In order to find out similarities of movies in various movie websites, I chose IMDb, Netflix, and Box-office to analyze. All the websites rate movies into various way, and among those availabilities, I decided on analyzing top 100 movies that have been specified as “popular” in IMDb and Netflix, then find out how these relate to the top 100 worldwide grosses, which shows in Box-Office website. For the rank in the IMDb chart, which reflects the popularity, is determined by IMDb Users. However, for the rank of popular movies in Netflix, the website did not specify how the popularity is being ranked, instead it gives users to see the movies that is "sort by popular". I assume the popularity of movies in Netflix is based upon Netflix Users.
+
+```{r,include=FALSE}
+# import packages (use install.packages("name of the package") to install required packages) 
+library(tidyverse)
+library(lubridate)
+library(xml2)
+library(rvest)
+library(stringr)
+library(wordcloud)
+library(dplyr)
+library(tidytext)
+library(ggplot2)
+```
+
+# Datasets
+
+## 1.IMDb
+
+### First, go to the IMDb’s top 100s most popular movies from link: “https://www.imdb.com/chart/moviemeter?ref_=nv_mv_mpm” Get the data by scraping the webpage. Below is the example of scraped data before the cleaning.
+
+```{r,echo=FALSE}
+# scrape IMDb's 100 most popular movies
+imdb <- "https://www.imdb.com/chart/moviemeter?ref_=nv_mv_mpm" %>%
+  read_html() %>% html_table(fill = TRUE) %>% .[[1]]
+# show top few lines in original scraped imdb website
+head(imdb)
+```
+
+### There are movies' titles with their release year sorted by rank, and the ratings of the movies. Clean the data by having three columns “Title”, “Year”, and “Rating” in the order of rank. While cleaning the data, I had to remove unnecessary symbols for variable “Year”. For those rating that are not shown in the website, it will be listed as NA in R. Now the data for IMDb is cleaned and below is the output of first few lines of cleaned IMDb data.
+
+```{r,echo=FALSE}
+# change the column names
+colnames(imdb)[colnames(imdb)=="Rank & Title"] <- "Title"
+colnames(imdb)[colnames(imdb)=="IMDb Rating"] <- "IMDb_rating"
+# clean the data by separating original title to "Title" and "Year"
+imdb <- imdb[c(2,3)] %>% separate (Title,c("Title","Year"),sep = "\n")
+# remove parenthesis in "Year" and add rank column
+imdb <- imdb %>% mutate(Year = as.numeric(gsub("[^0-9]","",Year))) %>% 
+  mutate(IMDb_rank = 1:nrow(imdb))
+# export IMDb data to csv file (saves in same directory as this R markdown file)
+write.csv(imdb, "imdb.csv")
+# show top few lines in imdb
+head(imdb)
+```
+
+### Using IMDb dataset, there shows every movie's rating corresponding to its rank of the popularity. Let's fit a linear regression line to these datasets to see if there exists a linear relationship between the rating of the movie and the rank of the popularity. Below is the linear plot of the IMDb rating vs. IMDb rank.
+
+```{r,echo=FALSE,fig.width=4, fig.height=3}
+fit0 <- lm(IMDb_rating ~ IMDb_rank, data = imdb)
+fit0_summary <- summary(fit0)
+ggplot(imdb, aes(x = IMDb_rank, y = IMDb_rating)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title="IMDb rating vs. IMDb rank") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### This plot clearly shows there is no linear relationship between rating and rank based on IMDb dataset. Using this result, we can conclude that rating of movies does not affect the popularity.
+
+
+## 2.Box Office
+
+### Then go to Box-office website that gives 100 movies sorted in order of worldwide grosses: “https://www.boxofficemojo.com/alltime/world/”. When scraping this data, the first row which contains column names needs to be adjusted. After cleaning the data, select only columns that will be needed in this project (you can select more columns if necessary by changing “box_office %>% select("column name")” at the final line of “Box Office” section. For this project, I selected columns that contains “Box_office_rank”, “Title”, “Worldwide_gross”, and “Year”. For the csv file that contains box-office data, I have saved all the columns for further analysis in the future. The example of the cleaned dataset that is needed is shown below.
+
+```{r,echo=FALSE}
+# scrape Box Office's 100 worldwide grosses of movies
+box_office_url <- "https://www.boxofficemojo.com/alltime/world/" %>%
+  read_html() %>% html_table(fill = TRUE) %>% .[[3]]
+# clean the data by changing column names
+colnames(box_office_url)[1:length(colnames(box_office_url))] <- box_office_url[1,1:length(colnames(box_office_url))]
+box_office <- box_office_url[-1,]
+names(box_office)[5] <- "Domestic_gross"
+names(box_office)[6] <- "Domestic_percentage"
+names(box_office)[7] <- "Overseas_gross"
+names(box_office)[8] <- "Overseas_percentage"
+names(box_office)[9] <- "Year"
+# adding rank column by changing the column name and renaming the worldwide gross column
+box_office <- box_office %>% rename(Box_office_rank = Rank) %>%
+  rename(Worldwide_gross = Worldwide)
+# clean the data by removing non numeric and changing character to numeric of each numeric column
+box_office <- box_office %>% mutate(Year = as.numeric(gsub("[^0-9]","",Year))) %>% 
+  mutate(Worldwide_gross = as.numeric(gsub('[$,]','',Worldwide_gross))) %>%
+  mutate(Domestic_gross = as.numeric(gsub('[$]','',Domestic_gross))) %>%
+  mutate(Domestic_percentage = as.numeric(gsub('[%]','',Domestic_percentage))) %>%
+  mutate(Overseas_gross = as.numeric(gsub('[$,]','',Overseas_gross))) %>%
+  mutate(Overseas_percentage = as.numeric(gsub('[%]','',Overseas_percentage))) %>%
+  mutate(Box_office_rank = as.numeric(Box_office_rank))
+# export Box-office data to csv file (saves in same directory as this R markdown file)
+write.csv(box_office, "box office.csv")
+# cleaned Box_Office data (select columns that will be neede in this project)
+box_office <- box_office %>% select("Box_office_rank","Title","Worldwide_gross","Year")
+head(box_office)
+```
+
+
+## 3.Netflix
+
+### Finally for Netflix data, I got them from “https://reelgood.com/movies/source/netflix?filter-sort=1” and “https://reelgood.com/movies/source/netflix?filter-sort=1&offset=50”, which first link contains the first 50 of the dataset and the second link contains the second 50 of the dataset that has been sorted by popularity. The title for column needs to be fixed. This dataset contains two rating, one refers to the movie's suitability for certain audiences based on its content, and the other rating refers to how good the movie is. Therefore, in order to not to be confused with the rate that will be evaluated in this project, I will only consider the rating of "how good the movie" in here. Since this dataset is also sorted as popularity, I have added rank column to see the rank of each movie along with their ratings. Below is the example of Netflix dataset.
+
+```{r,echo=FALSE}
+# scrape movies in netflix sorted by popularity (first 50 lists)
+netflix1 <- "https://reelgood.com/movies/source/netflix?filter-sort=1" %>%
+  read_html() %>% html_table(fill = TRUE) %>% .[[1]]
+# add the column name of rating
+names(netflix1)[2] <- "Title"
+names(netflix1)[6] <- "Netflix_rating"
+# scrape movies in netflix sorted by popularity (second 50 lists)
+netflix2 <- "https://reelgood.com/movies/source/netflix?filter-sort=1&offset=50" %>%
+  read_html() %>% html_table(fill = TRUE) %>% .[[1]]
+# add the column name of rating
+names(netflix2)[2] <- "Title"
+names(netflix2)[6] <- "Netflix_rating"
+# row bind the two datasets
+netflix <- rbind(netflix1,netflix2)
+# select only neccesary columns and then add rank column
+netflix <- netflix[c(2,4,6)] %>%
+  mutate(Netflix_rank = 1:nrow(netflix))
+# show top few lines of Netflix dataset
+head(netflix)
+# export Box-office data to csv file (saves in same directory as this R markdown file)
+write.csv(netflix, "netflix.csv")
+```
+
+### Since these popular movies are from different released year (other data does too), let's see which year has the highest count of movies using bar plot.
+
+```{r,echo=FALSE,fig.width=7, fig.height=4}
+# plot of number of popular movies in each year
+count_per_year <- netflix %>% group_by(Year) %>% count(Year,sort = TRUE)
+count_per_year %>% ggplot(aes(Year,n)) + geom_bar(stat = "identity",fill="steelblue") + 
+  labs(title="Counts of movies in each year (Netflix)", x="Year", y="count") +
+  geom_text(aes(label=n), vjust=-0.3, size=3.5) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### According to the result of the bar plot, it can clearly see that movies in recent years are more likely to be favored by Netflix users. Among those years, year 2018 has the highest count of movies that are popular.
+
+# Comparisons
+
+## IMDb and Netflix 
+
+### After collecting all the neccessary data from IMDb, Box-Office, and Netflix, now let's see the similarities between each datasets. First see the common movies in IMDb and Netflix by merging the two datasets from already cleaned datasets "imdb" and "netflix".
+
+```{r,echo=FALSE}
+# common movies in IMDb and Netflix
+imdb_netflix <- merge(imdb,netflix,by = c("Title","Year"))
+imdb_netflix
+```
+
+### There are 11 movies in common that is shown in the top 100 popular movies in IMDb and Netflix website. We can see that the ratings of each movies stays the same but the rank is different. "Avengers: Infinity War" that has been released in 2018 shows the rank in first place for Netflix while IMDb has placed it in the second. Furthermore, among those 11 common movies, Netflix's rank  contains all the first seven rank while IMDb's rank varies a lot. This show that althogh the ratings is same throughout the movies, each website's users' preference on movies varies.
+
+
+## IMDb and Box-Office
+### Now let's see the relationship between top 100's worldswide grosses of movies in IMDb's top 100's popular movies. First, merge the two datasets of already cleaned "imbd" and "box_office" to see the common movies.
+
+```{r,echo=FALSE}
+# common movies in IMDb and Box-Office
+imdb_box_office <- merge(imdb,box_office,by = c("Title","Year"))
+imdb_box_office
+```
+
+### Above result shows that there are 14 movies are shown in both datasets and we can see the relationship between rank of the movie and the worldwide grosses. Let's fit a linear model between the worldwide gross and the rank of the movie, and also between worldwide gross and the rate of the movie.
+
+```{r,echo=FALSE,fig.width=3.5, fig.height=3}
+fit1 <- lm(Worldwide_gross ~ IMDb_rank, data = imdb_box_office)
+fit1_summary <- summary(fit1)
+ggplot(imdb_box_office, aes(x = IMDb_rank, y = Worldwide_gross)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title="Worldwide grosses vs. IMDb rank") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+fit <- lm(Worldwide_gross ~ IMDb_rating, data = imdb_box_office)
+fit_summary <- summary(fit)
+ggplot(imdb_box_office, aes(x = IMDb_rating, y = Worldwide_gross)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title="Worldwide grosses vs. IMDb rating") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+### According to the linear regression result shown above, we can see the trend, which gives higer rank has better worldwide grosses. As for numerical result, we can conclude that the worldwide grosses decrease by 10.525 millions of dollars for every increase in rank in IMDb datasets (note that model only explains 33% of the variability of the response data around its mean). For worldwide grosses and IMDb rating plot, we can't conclude there is a linear relationship, and its Adjusted R-squared value is extremely small (6 percent), which indicates that the model is meaningless. This concludes that rating of the movie does not effect the worldwide grosses. However, we can see the broad trend of the model through the linear plot.
+
+
+## Netflix and Box-Office
+
+### Now let's see the relationship between Netflix and its worldwide grosses. Merge "netflix" and "box_office" to get the common movies in these datasets. There are 7 movies show in common. And also fit a linear plot of this merged dataset that gives the relationship between worldwide grosses and rank of Netflix. There are only half of the movies that is common with Netflix dataset and the Box-Office dataset compare to the IMDb dataset and the Box-Office dataset. This shows that IMDb website's popular movies contains more movies that have greater worldwide grosses.
+
+```{r,echo=FALSE}
+# common movies in Netflix and Box Office
+netflix_box_office <- merge(netflix,box_office,by = c("Title","Year"))
+netflix_box_office
+```
+
+```{r,echo=FALSE,fig.width=3.5, fig.height=3}
+fit2 <- lm(Worldwide_gross ~ Netflix_rank, data = netflix_box_office)
+fit2_summary <- summary(fit2)
+ggplot(netflix_box_office, aes(x = Netflix_rank, y = Worldwide_gross)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title="Worldwide grosses vs. Netflix rank") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+fit3 <- lm(Worldwide_gross ~ Netflix_rating, data = netflix_box_office)
+fit3_summary <- summary(fit3)
+ggplot(netflix_box_office, aes(x = Netflix_rating, y = Worldwide_gross)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title="Worldwide grosses vs. Netflix rating") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### According to the summary and plot shown above, there is 24 percent explaining the model that for every increase in rank, worldwide gross decreases by 6.145 millions of dollar. There are only 38 percent explaining the model that for every increase in rating(out of 10), worldwide grosses increases by 403.3 millions of dollar. We can see the increasing and decresing trend from the linear plot.
+
+
+## Netflix, IMDb, and Box-Office
+
+### Lastly, merge the all three datasets "netflix", "imdb", and "box_office" to get the common movies throughout the whole. Below is the result of merged datasets that gives 4 common movies. Interestingly, these four movies are all ranked in top 4 of the "netflix" datasets. Another interesting result is that fourth movie "Thor: Ragnarok" has ranked 43 higher than "Guardians of the Galaxy Vol. 2" in IMDb's rank, which is quite a huge gap. Out of these four movies, two are release in 2017, and other two released in 2018, which are all recent ones. Ratings for these movies are all above 7.0 and but below 9.0.
+
+```{r,echo=FALSE}
+# common movies in all of three sources
+common_movies <- merge(imdb_box_office,netflix_box_office, by = c("Title","Year"))
+common_movies
+```
+
+# Bar Plots
+
+### According to the result of the common movies throughout all three websites, let's see the bar plot of worldwide grosses for each of the movies. It clearly shows "Avengers: Infinity War" is highest among all, and it has 2048.4 millions of dollars of worldwide grosses.
+
+```{r,echo=FALSE,fig.width=6, fig.height=3.5}
+# plot of common movies in all three sources with their worldwide grosses
+common_movies %>% ggplot(aes(Title,Worldwide_gross.x)) + geom_bar(stat = "identity",fill="steelblue") + 
+  labs(title="Worldwide grosses for movies that are in common", x="movie title",y="worldwide grosses in millions of dollars") +
+  geom_text(aes(label=Worldwide_gross.x), vjust=-0.3, size=3.5) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+# Most common non-stop words in Titles
+
+### Let's analyze the words in movies' titles. We can find out which words are more frequently used by taking out the stop words and then get the frequency of the words. First see which words in IMDb's dataset. When analyzing, the words in title have to be splitted and then create a new column that only contains each word. We can use "unnest_tokens", which is R function to split the words. Some of the titles may contain numbers, so take the numbers out using "-grep". Then anti-join with stop words will generate a column that only contains non-stop words of the titles. R contains stop words data as "stop_words" so I don't have to import stop words to analyze. Once anti-join with stop words, use "count()" function to get the frequency of the words. 
+
+### Top 10 non-stop words of titles from IMDb's dataset
+
+```{r,echo=FALSE}
+# non-stop words in IMDb
+imdb_words <- imdb %>% unnest_tokens(word, Title)
+# removes numbers in the words
+imdb_words <- imdb_words[- grep("[0-9]", imdb_words$word),]
+# anti-join with stop words to get non-stop words
+imdb_non_stop_words <- imdb_words %>% anti_join(stop_words)
+# select only column contains word
+imdb_non_stop_words <- imdb_non_stop_words %>% select(word)
+# count the same words and group them then sort with decreasing number of word
+imdb_non_stop_words_count <- imdb_non_stop_words %>% count(word, sort = TRUE)
+# see the top10 imdb non-stop words
+head(imdb_non_stop_words_count,10)
+```
+
+### Top 10 non-stop words of titles from Box-Office's dataset
+```{r,echo=FALSE}
+# non-stop words in Box-Office
+box_office_words <- box_office %>% unnest_tokens(word, Title)
+# removes numbers in the words
+box_office_words <- box_office_words[- grep("[0-9]", box_office_words$word),]
+# anti-join with stop words to get non-stop words
+box_office_non_stop_words <- box_office_words %>% anti_join(stop_words)
+# select only column contains word
+box_office_non_stop_words <- box_office_non_stop_words %>% select(word)
+# count the same words and group them then sort with decreasing number of word
+box_office_non_stop_words_count <- box_office_non_stop_words %>% count(word, sort = TRUE)
+# see the top10 box-office non-stop words
+head(box_office_non_stop_words_count,10)
+```
+
+### Top 10 non-stop words of titles from Netflix's dataset
+
+```{r,echo=FALSE}
+# non-stop words in Netflix
+netflix_words <- netflix %>% unnest_tokens(word, Title)
+# removes numbers in the words
+netflix_words <- netflix_words[- grep("[0-9]", netflix_words$word),]
+# anti-join with stop words to get non-stop words
+netflix_non_stop_words <- netflix_words %>% anti_join(stop_words)
+# select only column contains word
+netflix_non_stop_words <- netflix_non_stop_words %>% select(word)
+# count the same words and group them then sort with decreasing number of word
+netflix_non_stop_words_count <- netflix_non_stop_words %>% count(word, sort = TRUE)
+# see the top10 netflix non-stop words
+head(netflix_non_stop_words_count,10)
+```
+
+### Let's combine all of these sources of non-stop words to get the overall top 10 non-stop words. Then we can make a world cloud of the result using "worldcloud()" function from R.
+```{r,echo=FALSE,fig.width=4, fig.height=4}
+# row bind all of non-stop words in three websites
+non_stop_words <- rbind(imdb_non_stop_words,box_office_non_stop_words,netflix_non_stop_words)
+# count the same words and group them then sort with decreasing number of word
+non_stop_words <- non_stop_words %>% count(word, sort = TRUE)
+# get top 10 non-stop words in all IMDb,Box-Office, and Netflix
+head(non_stop_words,10)
+# create a word cloud for top 10 non-stop words in all of three websites combined
+non_stop_words %>% with(wordcloud(word, n, max.words = 10))
+```
+
+### According to this result, word "star" placed in the first, next is "avengers", then "spider". Just by looking at these 10 words all seems describing heroic figures and something powerful. I can bring a hypothetical conclusion that people are desiring of superpower to overcome the problem that is hard to resolve. I can think of the reason that these types of movies are the most popular among all the movies is that in real world there is no such superpower, so that people want to satisfy themselves by watching heroic movies.
+
+
+# Conclusion
+
+### The movie websites, which are IMDb and Netflix, describing the popularities have different results. Their rank of movies are differ so that only contains 11 common movies among top 100's popular movies, which is just about 10 percent. Also by fitting various linear plots, the results show that there is no relationship between rating and rank of the movies. For relationship between worldwide gross and movies' rate and rating, there is no enough evidence to prove the relationship between them. There might be no enough data to get the result. It would be better if there has large dataset to compute. However, IMDb website only contains the top 100s popular movies. Therefore, in order to see the better relationship between grosses and rating or rank using these website, movies should be chosen more randomly without the preferences.
+
