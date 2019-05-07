@@ -1,10 +1,13 @@
 # Popular-Movies
 
-Datasets are scraped from following three websites:
+## Datasets are scraped from following three websites:
 
 IMDb's 100 popular movies: https://www.imdb.com/chart/moviemeter?ref_=nv_mv_mpm
+
 Netflix's first 50 popular movies: https://reelgood.com/movies/source/netflix?filter-sort=1
+
 Netflix's second 50 popular movies:https://reelgood.com/movies/source/netflix?filter-sort=1&offset=50
+
 Box-Office top 100 worldwide grosses of movies: https://www.boxofficemojo.com/alltime/world/
 
 
